@@ -1,0 +1,33 @@
+<idea-plugin>
+  <id>dev.hashnode.bas.the.inspector</id>
+  <name>Hector the Inspector</name>
+  <version>1.0</version>
+  <vendor email="basleijdekkers@gmail.com" url="https://twitter.com/InspectorBas">Bas Leijdekkers</vendor>
+
+  <description><![CDATA[
+      Hector the Inspector returns! This plugin adds Hector the Inspector back to the status bar, where he has
+      been missing since 2020.2. Hector shows the current inspection profile in use and clicking on Hector opens
+      the inspection settings.
+    ]]></description>
+
+  <change-notes><![CDATA[
+    This is the first public release of this plugin.
+    ]]>
+  </change-notes>
+
+  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="202.0"/>
+
+  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <statusBarWidgetFactory id="HectorTheInspectorWidget" implementation="dev.hashnode.bas.ProfileWidgetFactory" order="first"/>
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
