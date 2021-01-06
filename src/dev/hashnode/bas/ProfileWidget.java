@@ -11,6 +11,7 @@ import com.intellij.ide.PowerSaveMode;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
@@ -36,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 
 /**
  * @author Bas Leijdekkers
@@ -82,6 +84,12 @@ public class ProfileWidget extends TextPanel.WithIconAndArrows implements Custom
 
             @Override
             public void profileChanged(@Nullable InspectionProfile profile) {
+                updateStatus();
+            }
+        });
+        connection.subscribe(DaemonCodeAnalyzer.DAEMON_EVENT_TOPIC, new DaemonCodeAnalyzer.DaemonListener() {
+            @Override
+            public void daemonStarting(@NotNull Collection<? extends FileEditor> fileEditors) {
                 updateStatus();
             }
         });
