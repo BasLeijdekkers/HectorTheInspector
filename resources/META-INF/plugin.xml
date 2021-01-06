@@ -1,7 +1,8 @@
+<!-- Copyright 2020 Bas Leijdekkers Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file. -->
 <idea-plugin>
   <id>dev.hashnode.bas.the.inspector</id>
   <name>Hector the Inspector</name>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <vendor email="basleijdekkers@gmail.com" url="https://twitter.com/InspectorBas">Bas Leijdekkers</vendor>
 
   <description><![CDATA[
@@ -11,7 +12,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-    This is the first public release of this plugin.
+    Make current profile display more reliable after profile change.
     ]]>
   </change-notes>
 
