@@ -1,4 +1,4 @@
-// Copyright 2020 Bas Leijdekkers Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+// Copyright 2020-2023 Bas Leijdekkers Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package dev.hashnode.bas;
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
@@ -98,7 +98,6 @@ public class ProfileWidget extends TextPanel.WithIconAndArrows implements Custom
     }
 
     private void updateStatus() {
-        ApplicationManager.getApplication().assertIsDispatchThread();
         updateStatus(getCurrentFile());
     }
 
@@ -119,28 +118,32 @@ public class ProfileWidget extends TextPanel.WithIconAndArrows implements Custom
         final ProjectInspectionProfileManager profileManager = ProjectInspectionProfileManager.getInstance(project);
         final InspectionProfileImpl profile = profileManager.getCurrentProfile();
         setText(profile.getDisplayName());
-        if (file != null && DaemonCodeAnalyzer.getInstance(file.getProject()).isHighlightingAvailable(file)) {
-            if (PowerSaveMode.isEnabled()) {
-                setIcon(IconLoader.getDisabledIcon(AllIcons.Ide.HectorOff));
-                setToolTipText("Highlighting level: none (power save mode)");
-            }
-            else if (HighlightingLevelManager.getInstance(project).shouldInspect(file)) {
-                setIcon(AllIcons.Ide.HectorOn);
-                setToolTipText("Highlighting level: all problems");
-            }
-            else if (HighlightingLevelManager.getInstance(project).shouldHighlight(file)) {
-                setIcon(AllIcons.Ide.HectorSyntax);
-                setToolTipText("Highlighting level: syntax");
+        final boolean highlighting =
+                file != null && DaemonCodeAnalyzer.getInstance(file.getProject()).isHighlightingAvailable(file);
+        ApplicationManager.getApplication().invokeLater(() -> {
+            if (highlighting) {
+                if (PowerSaveMode.isEnabled()) {
+                    setIcon(IconLoader.getDisabledIcon(AllIcons.Ide.HectorOff));
+                    setToolTipText("Highlighting level: none (power save mode)");
+                }
+                else if (HighlightingLevelManager.getInstance(project).shouldInspect(file)) {
+                    setIcon(AllIcons.Ide.HectorOn);
+                    setToolTipText("Highlighting level: all problems");
+                }
+                else if (HighlightingLevelManager.getInstance(project).shouldHighlight(file)) {
+                    setIcon(AllIcons.Ide.HectorSyntax);
+                    setToolTipText("Highlighting level: syntax");
+                }
+                else {
+                    setIcon(AllIcons.Ide.HectorOff);
+                    setToolTipText("Highlighting level: none");
+                }
             }
             else {
-                setIcon(AllIcons.Ide.HectorOff);
-                setToolTipText("Highlighting level: none");
+                setIcon(IconLoader.getDisabledIcon(AllIcons.Ide.HectorOff));
+                setToolTipText("No highlighting");
             }
-        }
-        else {
-            setIcon(IconLoader.getDisabledIcon(AllIcons.Ide.HectorOff));
-            setToolTipText("No highlighting");
-        }
+        });
     }
 
     @Override
