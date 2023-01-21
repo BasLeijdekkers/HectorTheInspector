@@ -1,4 +1,4 @@
-<!-- Copyright 2020 Bas Leijdekkers Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file. -->
+<!-- Copyright 2020-2023 Bas Leijdekkers Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file. -->
 <idea-plugin>
   <id>dev.hashnode.bas.the.inspector</id>
   <name>Hector the Inspector</name>
@@ -6,9 +6,16 @@
   <vendor email="basleijdekkers@gmail.com" url="https://twitter.com/InspectorBas">Bas Leijdekkers</vendor>
 
   <description><![CDATA[
-      Hector the Inspector returns! This plugin adds Hector the Inspector back to the status bar, where he has
+      Hector the Inspector returns! This plugin adds the Hector the Inspector icon back to the status bar, where he has
       been missing since 2020.2. Hector shows the current inspection profile in use and clicking on Hector opens
       the inspection settings.
+    <br><br>
+      You may want to check out my other plugins:
+      <h3><a href="https://plugins.jetbrains.com/plugin/17755-insomniac">Insomniac</a></h3>
+      Prevents your system from sleeping while a long-running task is active in the IDE.
+      <h3><a href="https://plugins.jetbrains.com/plugin/93-metricsreloaded">MetricsReloaded</a></h3>
+      Lines of Code and file count metrics for all languages supported by your IDE and many more metrics for Java.
+      <br><br>
     ]]></description>
 
   <change-notes><![CDATA[
@@ -16,19 +23,9 @@
     ]]>
   </change-notes>
 
-  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
   <idea-version since-build="202.0"/>
-
-  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
   <depends>com.intellij.modules.platform</depends>
-
   <extensions defaultExtensionNs="com.intellij">
     <statusBarWidgetFactory id="HectorTheInspectorWidget" implementation="dev.hashnode.bas.ProfileWidgetFactory" order="first"/>
   </extensions>
-
-  <actions>
-    <!-- Add your actions here -->
-  </actions>
-
 </idea-plugin>
