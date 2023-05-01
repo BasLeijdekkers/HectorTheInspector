@@ -1,8 +1,8 @@
-<!-- Copyright 2020-2023 Bas Leijdekkers Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file. -->
+<!-- Copyright 2020 Bas Leijdekkers Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file. -->
 <idea-plugin>
   <id>dev.hashnode.bas.the.inspector</id>
   <name>Hector the Inspector</name>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <vendor email="basleijdekkers@gmail.com" url="https://twitter.com/InspectorBas">Bas Leijdekkers</vendor>
 
   <description><![CDATA[
@@ -10,7 +10,7 @@
       been missing since 2020.2. Hector shows the current inspection profile in use and clicking on Hector opens
       the inspection settings.
     <br><br>
-      You may want to check out my other plugins:
+      You may want to check out one of my other plugins:
       <h3><a href="https://plugins.jetbrains.com/plugin/17755-insomniac">Insomniac</a></h3>
       Prevents your system from sleeping while a long-running task is active in the IDE.
       <h3><a href="https://plugins.jetbrains.com/plugin/93-metricsreloaded">MetricsReloaded</a></h3>
@@ -19,13 +19,14 @@
     ]]></description>
 
   <change-notes><![CDATA[
-    1.0.2: Fix compatibility with 2023.1 builds<br>
-    1.0.1: Make current profile display more reliable after profile change<br>
-    1.0:   The first public release of this plugin
+    1.0.3: Prevent a potential freeze on the UI thread. Compiled with JDK 17.<br>
+    1.0.2: Fix compatibility with 2023.1 builds.<br>
+    1.0.1: Make current profile display more reliable after profile change.<br>
+    1.0:   The first public release of this plugin.
     ]]>
   </change-notes>
 
-  <idea-version since-build="202.0"/>
+  <idea-version since-build="222.0"/>
   <depends>com.intellij.modules.platform</depends>
   <extensions defaultExtensionNs="com.intellij">
     <statusBarWidgetFactory id="HectorTheInspectorWidget" implementation="dev.hashnode.bas.ProfileWidgetFactory" order="first"/>
