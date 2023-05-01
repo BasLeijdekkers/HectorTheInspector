@@ -312,8 +312,19 @@
       <module fileurl="file://$PROJECT_DIR$/HectorTheInspector.iml" filepath="$PROJECT_DIR$/HectorTheInspector.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="IntelliJ IDEA IU-202.7319.50" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="IntelliJ IDEA 2022.2" project-jdk-type="IDEA JDK">
     <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="Hector the Inspector" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="HectorTheInspector" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -ea" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
