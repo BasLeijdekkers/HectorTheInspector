@@ -2,7 +2,7 @@
 <idea-plugin>
   <id>dev.hashnode.bas.the.inspector</id>
   <name>Hector the Inspector</name>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <vendor email="basleijdekkers@gmail.com" url="https://twitter.com/InspectorBas">Bas Leijdekkers</vendor>
 
   <description><![CDATA[
@@ -19,6 +19,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
+    1.0.4: Really fix the potential freeze on the UI thread.<br>
     1.0.3: Prevent a potential freeze on the UI thread. Compiled with JDK 17.<br>
     1.0.2: Fix compatibility with 2023.1 builds.<br>
     1.0.1: Make current profile display more reliable after profile change.<br>
