@@ -8,7 +8,8 @@ import com.intellij.codeInspection.InspectionProfile;
 import com.intellij.codeInspection.ex.InspectionProfileImpl;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.PowerSaveMode;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditor;
@@ -31,6 +32,7 @@ import com.intellij.profile.codeInspection.ui.ErrorsConfigurableProvider;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.ClickListener;
+import com.intellij.util.concurrency.AppExecutorUtil;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +48,6 @@ public class ProfileWidget extends TextPanel.WithIconAndArrows implements Custom
     @NotNull
     private final Project project;
     private StatusBar statusBar;
-    private boolean disposed = false;
 
     public ProfileWidget(Project project) {
         this.project = project;
@@ -98,7 +99,40 @@ public class ProfileWidget extends TextPanel.WithIconAndArrows implements Custom
     }
 
     private void updateStatus() {
-        updateStatus(getCurrentFile());
+        if (isDisposed()) {
+            return;
+        }
+        final ProjectInspectionProfileManager profileManager = ProjectInspectionProfileManager.getInstance(project);
+        final InspectionProfileImpl profile = profileManager.getCurrentProfile();
+        setText(profile.getDisplayName());
+        ReadAction.nonBlocking(() -> {
+                    final PsiFile file = getCurrentFile();
+                    final boolean highlighting = file != null &&
+                            DaemonCodeAnalyzer.getInstance(file.getProject()).isHighlightingAvailable(file);
+                    if (highlighting) {
+                        if (PowerSaveMode.isEnabled()) {
+                            return new IconText(IconLoader.getDisabledIcon(AllIcons.Ide.HectorOff),
+                                                "Highlighting level: none (power save mode)");
+                        } else if (HighlightingLevelManager.getInstance(project).shouldInspect(file)) {
+                            return new IconText(AllIcons.Ide.HectorOn, "Highlighting level: all problems");
+                        } else if (HighlightingLevelManager.getInstance(project).shouldHighlight(file)) {
+                            return new IconText(AllIcons.Ide.HectorSyntax, "Highlighting level: syntax");
+                        } else {
+                            return new IconText(AllIcons.Ide.HectorOff, "Highlighting level: none");
+                        }
+                    } else {
+                        return new IconText(IconLoader.getDisabledIcon(AllIcons.Ide.HectorOff), "No highlighting");
+                    }
+                })
+                .finishOnUiThread(ModalityState.any(), iconText -> {
+                    if (isDisposed()) {
+                        return;
+                    }
+                    setIcon(iconText.icon);
+                    setToolTipText(iconText.text);
+                })
+                .expireWith(this)
+                .submit(AppExecutorUtil.getAppExecutorService());
     }
 
     @Nullable
@@ -111,44 +145,7 @@ public class ProfileWidget extends TextPanel.WithIconAndArrows implements Custom
         return PsiDocumentManager.getInstance(project).getPsiFile(document);
     }
 
-    private void updateStatus(@Nullable PsiFile file) {
-        if (disposed) {
-            return;
-        }
-        final ProjectInspectionProfileManager profileManager = ProjectInspectionProfileManager.getInstance(project);
-        final InspectionProfileImpl profile = profileManager.getCurrentProfile();
-        setText(profile.getDisplayName());
-        final boolean highlighting =
-                file != null && DaemonCodeAnalyzer.getInstance(file.getProject()).isHighlightingAvailable(file);
-        final Icon icon;
-        final String text;
-        if (highlighting) {
-            if (PowerSaveMode.isEnabled()) {
-                icon = IconLoader.getDisabledIcon(AllIcons.Ide.HectorOff);
-                text = "Highlighting level: none (power save mode)";
-            }
-            else if (HighlightingLevelManager.getInstance(project).shouldInspect(file)) {
-                icon = AllIcons.Ide.HectorOn;
-                text = "Highlighting level: all problems";
-            }
-            else if (HighlightingLevelManager.getInstance(project).shouldHighlight(file)) {
-                icon = AllIcons.Ide.HectorSyntax;
-                text = "Highlighting level: syntax";
-            }
-            else {
-                icon = AllIcons.Ide.HectorOff;
-                text = "Highlighting level: none";
-            }
-        }
-        else {
-            icon = IconLoader.getDisabledIcon(AllIcons.Ide.HectorOff);
-            text = "No highlighting";
-        }
-        ApplicationManager.getApplication().invokeLater(() -> {
-            setIcon(icon);
-            setToolTipText(text);
-        });
-    }
+    record IconText(Icon icon, String text) {}
 
     @Override
     public void setIcon(@Nullable Icon icon) {
@@ -171,9 +168,12 @@ public class ProfileWidget extends TextPanel.WithIconAndArrows implements Custom
         this.statusBar = statusBar;
     }
 
+    private boolean isDisposed() {
+        return statusBar == null;
+    }
+
     @Override
     public void dispose() {
-        disposed = true;
         statusBar = null;
     }
 }
